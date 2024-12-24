@@ -12,9 +12,9 @@ namespace Maze
             Right
         }
 
-        private static readonly double ForwardSpeed = 6.6666666666666666;//60;
-        private static readonly double BackwardSpeed = 6.6666666666666666;//60;
-        private static readonly double RotationSpeed = 1;//20;
+        private static readonly double ForwardSpeed = 3;
+        private static readonly double BackwardSpeed = 1;
+        private static readonly double RotationSpeed = 0.8;
         private static readonly double AngleValue = 0.5;
 
         public double x
@@ -90,71 +90,61 @@ namespace Maze
             }
         }
 
-        private void Intercept(double cos, double sin, int width, int height)
+        private void Move(bool forward, Block[,] blocks, double elapsedTime)
         {
-            if (cos > 0)
+            int width = blocks.GetLength(1);
+            int height = blocks.GetLength(0);
+            double cos = forward == true ? Math.Cos(angle) : -Math.Cos(angle);
+            double sin = forward == true ? Math.Sin(angle) : -Math.Sin(angle);
+            double speed = forward == true ? ForwardSpeed : BackwardSpeed;
+            double x = this.x + (cos * speed * elapsedTime);
+            double y = this.y + (sin * speed * elapsedTime);
+            if (x < 0)
             {
-                if ((int)x > width)
-                {
-                    x = width;
-                }
+                x = 0;
             }
-            else
+            else if (x >= width)
             {
-                if ((int)x < 0)
-                {
-                    x = 0;
-                }
+                x = width - 1;
             }
-            if (sin > 0)
+            if (y < 0)
             {
-                if ((int)y > height)
-                {
-                    y = height;
-                }
+                y = 0;
             }
-            else
+            else if (y >= height)
             {
-                if ((int)y < 0)
-                {
-                    y = 0;
-                }
+                y = height - 1;
+            }
+            if (blocks[(int)y, (int)x] == null)
+            {
+                this.x = x;
+                this.y = y;
+            }
+            else if (blocks[(int)this.y, (int)x] == null)
+            {
+                this.x = x;
+            }
+            else if (blocks[(int)y, (int)this.x] == null)
+            {
+                this.y = y;
             }
         }
 
-        private void Move(bool forward, Block[,] blocks)
-        {
-            double cos = Math.Cos(angle);
-            double sin = Math.Sin(angle);
-            if (forward == true)
-            {
-                x += cos * ForwardSpeed * 0.15;
-                y += sin * ForwardSpeed * 0.15;
-                Intercept(cos, sin, blocks.GetLength(1) - 1, blocks.GetLength(0) - 1);
-            }
-            else
-            {
-                x -= cos * BackwardSpeed * 0.15;
-                y -= sin * BackwardSpeed * 0.15;
-                Intercept(-cos, -sin, blocks.GetLength(1) - 1, blocks.GetLength(0) - 1);
-            }
-        }
-
-        public void Input(Direction direction, Block[,] blocks)
+        public void Input(Direction direction, Block[,] blocks, double elapsedTime)
         {
             switch (direction)
             {
                 case Direction.Up:
-                    Move(true, blocks);
+                    Move(true, blocks, elapsedTime);
                     break;
                 case Direction.Down:
-                    Move(false, blocks);
+                    Move(false, blocks, elapsedTime);
                     break;
                 case Direction.Left:
-                    angle -= RotationSpeed * 0.15;
+                    angle -= elapsedTime * RotationSpeed;
                     break;
                 case Direction.Right:
-                    angle += RotationSpeed * 0.15;
+                    angle += elapsedTime * RotationSpeed;
                     break;
             }
         }
