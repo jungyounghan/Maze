@@ -12,15 +12,12 @@ namespace Maze
             Third
         }
 
-        static readonly int MinSizeX = 3;
-        static readonly int MinSizeY = 2;
-
         static void Main()
         {
             Screen.SetConsolePreferences();
             bool exit = false;
-            int x = MinSizeX;
-            int y = MinSizeY;
+            int x = Screen.MinSizeX;
+            int y = Screen.MinSizeY;
             Selection selection = Selection.First;
             while (exit == false)
             {
@@ -160,7 +157,7 @@ namespace Maze
                     }
                     while (Console.KeyAvailable)
                     {
-                        Console.ReadKey(intercept: true);
+                        Console.ReadKey(true);
                     }
                 }
                 if (point.x - 1 < player.x && player.x < point.x + 1 && point.y - 1 < player.y && player.y < point.y + 1)
@@ -239,13 +236,13 @@ namespace Maze
                         switch(selection)
                         {
                             case Selection.First:
-                                if(x > MinSizeX)
+                                if(x > Screen.MinSizeX)
                                 {
                                     x--;
                                 }
                                 break;
                             case Selection.Second:
-                                if (y > MinSizeY)
+                                if (y > Screen.MinSizeY)
                                 {
                                     y--;
                                 }

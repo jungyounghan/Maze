@@ -31,6 +31,10 @@ namespace Maze
         private static double Depth = 16;                   //렌더링 깊이
         private static double FieldOfView = Math.PI / 5;    //화각
 
+
+        public static readonly int MinSizeX = 3;
+        public static readonly int MinSizeY = 2;
+
         public static int X
         {
             get
@@ -183,25 +187,10 @@ namespace Maze
                     }
                     else
                     {
-                        //천장 테두리
-                        if (y == ceiling)
+                        //경계
+                        if (y == ceiling || y == floor)
                         {
-                            if (destination == true)
-                            {
-                                if (Twinkle == true)
-                                {
-                                    Console.BackgroundColor = ConsoleColor.Yellow;
-                                }
-                                else
-                                {
-                                    Console.BackgroundColor = ConsoleColor.DarkGray;
-                                }
-                            }
-                            else
-                            {
-                                Console.BackgroundColor = ConsoleColor.Black;
-                            }
-                            block.Print('\u2593');
+                            PrintEdge();
                         }
                         //천장
                         else if (y < ceiling)
@@ -215,26 +204,7 @@ namespace Maze
                             Console.BackgroundColor = ConsoleColor.Black;
                             block.Print(wallShade);
                         }
-                        //벽 테두리
-                        else if(y == floor)
-                        {
-                            if(destination == true)
-                            {
-                                if (Twinkle == true)
-                                {
-                                    Console.BackgroundColor = ConsoleColor.Yellow;
-                                }
-                                else
-                                {
-                                    Console.BackgroundColor = ConsoleColor.DarkGray;
-                                }
-                            }
-                            else
-                            {
-                                Console.BackgroundColor = ConsoleColor.Black;
-                            }
-                            block.Print('\u2593');
-                        }
+                        //바닥
                         else
                         {
                             double bound = 1.0 - (y - Height / 2.0) / (Height / 2.0);
@@ -260,6 +230,25 @@ namespace Maze
                             {
                                 Console.Write(' ');
                             }
+                        }
+                        void PrintEdge()
+                        {
+                            if (destination == true)
+                            {
+                                if (Twinkle == true)
+                                {
+                                    Console.BackgroundColor = ConsoleColor.Yellow;
+                                }
+                                else
+                                {
+                                    Console.BackgroundColor = ConsoleColor.DarkGray;
+                                }
+                            }
+                            else
+                            {
+                                Console.BackgroundColor = ConsoleColor.Black;
+                            }
+                            block.Print('\u2593');
                         }
                     }
                 }
