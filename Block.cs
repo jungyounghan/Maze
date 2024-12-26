@@ -27,7 +27,7 @@ namespace Maze
         public void Print()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write("★");
+            Console.Write('#');
         }
     }
 
@@ -156,11 +156,11 @@ namespace Maze
             if(block != null)
             {
                 Console.ForegroundColor = block.Color;
-                Console.Write("■");
+                Console.Write('\u2588');
             }
             else
             {
-                Console.Write("　");
+                Console.Write(' ');
             }
         }
 

@@ -14,7 +14,7 @@ namespace Maze
 
         private static readonly double ForwardSpeed = 3;
         private static readonly double BackwardSpeed = 1;
-        private static readonly double RotationSpeed = 0.8;
+        private static readonly double RotationSpeed = 1;
         private static readonly double AngleValue = 0.5;
 
         public double x
@@ -51,41 +51,49 @@ namespace Maze
             {
                 if (y > AngleValue)
                 {
-                    Console.Write('\u2199');
+                    //Console.Write('\u2199');
+                    Console.Write('\u2B69');
                 }
                 else if (y < -AngleValue)
                 {
-                    Console.Write('\u2196');
+                    //Console.Write('\u2196');
+                    Console.Write('\u2B66');
                 }
                 else
                 {
-                    Console.Write('\u2190');
+                    //Console.Write('\u2190');
+                    Console.Write('\u2B60');
                 }
             }
             else if (x > AngleValue)
             {
                 if (y > AngleValue)
                 {
-                    Console.Write('\u2198');
+                    //Console.Write('\u2198');
+                    Console.Write('\u2B68');
                 }
                 else if (y < -AngleValue)
                 {
-                    Console.Write('\u2197');
+                    //Console.Write('\u2197');
+                    Console.Write('\u2B67');
                 }
                 else
                 {
-                    Console.Write('\u2192');
+                    //Console.Write('\u2192');
+                    Console.Write('\u2B62');
                 }
             }
             else
             {
                 if (y > AngleValue)
                 {
-                    Console.Write('\u2193');
+                    //Console.Write('\u2193');
+                    Console.Write('\u2B63');
                 }
                 else
                 {
-                    Console.Write('\u2191');
+                    //Console.Write('\u2191');
+                    Console.Write('\u2B61');
                 }
             }
         }
@@ -103,15 +111,15 @@ namespace Maze
             {
                 x = 0;
             }
-            else if (x >= width)
+            else if(x > width - 1)
             {
                 x = width - 1;
             }
-            if (y < 0)
+            if(y < 0)
             {
                 y = 0;
             }
-            else if (y >= height)
+            else if(y > height - 1)
             {
                 y = height - 1;
             }

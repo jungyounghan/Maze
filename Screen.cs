@@ -25,7 +25,7 @@ namespace Maze
         const int SC_SIZE = 0xF000;
 
         private static bool Twinkle = false;
-        private static bool Map = true;
+        private static bool Map = false;
         private static readonly int Width = Console.WindowWidth;
         private static readonly int Height = Console.WindowHeight;
         private static double Depth = 16;                   //렌더링 깊이
@@ -57,9 +57,15 @@ namespace Maze
             Console.OutputEncoding = Encoding.UTF8;
         }
 
+
         public static void View()
         {
             Map = !Map;
+        }
+
+        public static void Reset()
+        {
+            Map = false;
         }
 
         public static void Print(Player player, Block[,] blocks, Point point)
@@ -158,47 +164,29 @@ namespace Maze
                 }
                 for (int y = 0; y < Height - 1; y++)
                 {
-                    if(Map == true && x < blockX * 2 && y < blockY)
+                    Console.SetCursorPosition(x, y);
+                    if (Map == true && x < blockX && y < blockY)
                     {
                         Console.BackgroundColor = ConsoleColor.Black;
-                        if (x % 2 == 0)
+                        if (x == (int)player.x && y == (int)player.y)
                         {
-                            Console.SetCursorPosition(x, y);
-                            if (x / 2 == (int)player.x && y == (int)player.y)
-                            {
-                                player.Print();
-                            }
-                            else if (x / 2 == point.x && y == point.y)
-                            {
-                                point.Print();
-                            }
-                            else
-                            {
-                                blocks[y, x / 2].Print();
-                            }
+                            player.Print();
+                        }
+                        else if (x == point.x && y == point.y)
+                        {
+                            point.Print();
+                        }
+                        else
+                        {
+                            blocks[y, x].Print();
                         }
                     }
                     else
                     {
-                        Console.SetCursorPosition(x, y);
-                        //천장
-                        if(y < ceiling)
+                        //천장 테두리
+                        if (y == ceiling)
                         {
-                            Console.BackgroundColor = ConsoleColor.DarkCyan;
-                            Console.Write(' ');
-                        }
-                        //벽
-                        else if (y > ceiling && y <= floor)
-                        {
-                            Console.BackgroundColor = ConsoleColor.Black;
-                            block.Print(wallShade);
-                        }
-                        //바닥
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            double bound = 1.0 - (y - Height / 2.0) / (Height / 2.0);
-                            if (destination && bound > (y - Height / 2.0))
+                            if (destination == true)
                             {
                                 if (Twinkle == true)
                                 {
@@ -211,8 +199,47 @@ namespace Maze
                             }
                             else
                             {
-                                Console.BackgroundColor = ConsoleColor.White;
+                                Console.BackgroundColor = ConsoleColor.Black;
                             }
+                            block.Print('\u2593');
+                        }
+                        //천장
+                        else if (y < ceiling)
+                        {
+                            Console.BackgroundColor = ConsoleColor.DarkCyan;
+                            Console.Write(' ');
+                        }
+                        //벽
+                        else if (y > ceiling && y < floor)
+                        {
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            block.Print(wallShade);
+                        }
+                        //벽 테두리
+                        else if(y == floor)
+                        {
+                            if(destination == true)
+                            {
+                                if (Twinkle == true)
+                                {
+                                    Console.BackgroundColor = ConsoleColor.Yellow;
+                                }
+                                else
+                                {
+                                    Console.BackgroundColor = ConsoleColor.DarkGray;
+                                }
+                            }
+                            else
+                            {
+                                Console.BackgroundColor = ConsoleColor.Black;
+                            }
+                            block.Print('\u2593');
+                        }
+                        else
+                        {
+                            double bound = 1.0 - (y - Height / 2.0) / (Height / 2.0);
+                            Console.BackgroundColor = ConsoleColor.White;
+                            Console.ForegroundColor = ConsoleColor.Black;
                             if (bound < 0.005)
                             {
                                 Console.Write('#');
