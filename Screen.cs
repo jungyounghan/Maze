@@ -29,7 +29,7 @@ namespace Maze
         private static readonly int Width = Console.WindowWidth;
         private static readonly int Height = Console.WindowHeight;
         private static double Depth = 16;                   //렌더링 깊이
-        private static double FieldOfView = Math.PI / 5;    //화각
+        private static double FieldOfView = Math.PI / 3.5;    //화각
 
 
         public static readonly int MinSizeX = 3;
@@ -78,7 +78,7 @@ namespace Maze
             int blockX = blocks.GetLength(1);
             for (int x = 0; x < Width; x++)
             {
-                double rayAngle = (player.angle - FieldOfView / 2) + x * FieldOfView / X;
+                double rayAngle = (player.angle - FieldOfView / 2) + x * FieldOfView / Width;
                 double rayX = Math.Cos(rayAngle);
                 double rayY = Math.Sin(rayAngle);
                 double distanceToWall = 0;
@@ -89,43 +89,34 @@ namespace Maze
                 while (!hitWall && distanceToWall < Depth)
                 {
                     distanceToWall += 0.1;
-                    int testX = (int)(player.x + rayX * distanceToWall);
-                    int testY = (int)(player.y + rayY * distanceToWall);
-                    if (testX < 0 || testX >= blockX || testY < 0 || testY >= blockY)
+                    int spaceX = (int)(player.x + rayX * distanceToWall);
+                    int spaceY = (int)(player.y + rayY * distanceToWall);
+                    if (spaceX < 0 || spaceX >= blockX || spaceY < 0 || spaceY >= blockY)
                     {
                         DivideBoundary();
                     }
                     else
                     {
-                        if (testX > blockX - 1)
-                        {
-                            testX = blockX - 1;
-                        }
-                        if (testY > blockY - 1)
-                        {
-                            testY = blockY - 1;
-                        }
-                        block = blocks[testY, testX];
+                        block = blocks[spaceY, spaceX];
                         if (block != null)
                         {
                             DivideBoundary();
                         }
                     }
-                    if (testX == point.x && testY == point.y)
+                    if (spaceX == point.x && spaceY == point.y)
                     {
                         destination = true;
                     }
                     void DivideBoundary()
                     {
-                        hitWall = true;
-                        distanceToWall *= Math.Cos(rayAngle - player.angle);
+                        hitWall = true;                        //distanceToWall *= Math.Cos(rayAngle - player.angle);
                         List<(double X, double Y)> boundsVectorsList = new List<(double X, double Y)>();
                         for (int tx = 0; tx < 2; tx++)
                         {
                             for (int ty = 0; ty < 2; ty++)
                             {
-                                double vx = testX + tx - player.x;
-                                double vy = testY + ty - player.y;
+                                double vx = spaceX + tx - player.x;
+                                double vy = spaceY + ty - player.y;
                                 double vectorModule = Math.Sqrt(vx * vx + vy * vy);
                                 double cosAngle = (rayX * vx / vectorModule) + (rayY * vy / vectorModule);
                                 boundsVectorsList.Add((vectorModule, cosAngle));
@@ -141,31 +132,6 @@ namespace Maze
                 }
                 int ceiling = (int)(Height / 2.0 - Height * FieldOfView / distanceToWall);
                 int floor = Height - ceiling;                //ceiling += Height - Height;
-                char wallShade;
-                if (isBound)
-                {
-                    wallShade = '|';
-                }
-                else if (distanceToWall <= Depth / 4.0)
-                {
-                    wallShade = '\u2588';
-                }
-                else if (distanceToWall < Depth / 3.0)
-                {
-                    wallShade = '\u2593';
-                }
-                else if (distanceToWall < Depth / 2.0)
-                {
-                    wallShade = '\u2592';
-                }
-                else if (distanceToWall < Depth)
-                {
-                    wallShade = '\u2591';
-                }
-                else
-                {
-                    wallShade = ' ';
-                }
                 for (int y = 0; y < Height - 1; y++)
                 {
                     Console.SetCursorPosition(x, y);
@@ -202,7 +168,30 @@ namespace Maze
                         else if (y > ceiling && y < floor)
                         {
                             Console.BackgroundColor = ConsoleColor.Black;
-                            block.Print(wallShade);
+                            if (isBound)
+                            {
+                                block.Print('|');
+                            }
+                            else if (distanceToWall <= Depth / 4.0)
+                            {
+                                block.Print('\u2588');
+                            }
+                            else if (distanceToWall < Depth / 3.0)
+                            {
+                                block.Print('\u2593');
+                            }
+                            else if (distanceToWall < Depth / 2.0)
+                            {
+                                block.Print('\u2592');
+                            }
+                            else if (distanceToWall < Depth)
+                            {
+                                block.Print('\u2591');
+                            }
+                            else
+                            {
+                                block.Print(' ');
+                            }
                         }
                         //바닥
                         else
